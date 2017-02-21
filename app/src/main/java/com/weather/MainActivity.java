@@ -3,7 +3,6 @@ package com.weather;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
@@ -27,7 +26,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements Contract.View {
-//, SwipeRefreshLayout.OnRefreshListener
+    //, SwipeRefreshLayout.OnRefreshListener
 //    private SwipeRefreshLayout mSwipeRefreshLayout;
     private WeatherManager weatherManager;
     private SharedPreferences sPref;
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
 //        mSwipeRefreshLayout.setOnRefreshListener(this);
 
         weatherManager = new WeatherManager(this, this);
-
+        onRefresh();
 //        sPref = getSharedPreferences(Constants.PREF, MODE_PRIVATE);
 //
 //        String id = sPref.getString(Constants.CITY_NAME, "");
