@@ -1,8 +1,7 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="now">now</string>
-    <string name="title_about_program">О программе</string>
-    <string name="title_update">Обновить</string>
+    <string name="title_about_program">About program</string>
     <string name="loading">Loading...</string>
 
     <string name="empty">-</string>

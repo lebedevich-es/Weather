@@ -1,5 +1,6 @@
 package com.weather.utils;
 
+import com.weather.model.City;
 import com.weather.model.Forecast;
 
 public interface Contract {
@@ -19,6 +20,6 @@ public interface Contract {
 
         void getWeather(double lat, double lon);
 
-        void getWeatherFromDb();
+        void getWeatherFromDb(City city);
     }
 }

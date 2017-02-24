@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.weather.costants.Constants;
+import com.weather.constants.Constants;
+import com.weather.model.City;
 import com.weather.model.Forecast;
 import com.weather.utils.Contract;
 import com.weather.utils.WeatherManager;
@@ -26,17 +28,25 @@ import java.util.Locale;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements Contract.View {
-    //, SwipeRefreshLayout.OnRefreshListener
-//    private SwipeRefreshLayout mSwipeRefreshLayout;
+
     private WeatherManager weatherManager;
     private SharedPreferences sPref;
-    private Boolean flag;
-
+    private TextView mCityName;
+    private TextView mCityCountry;
+    private TextView mForecast;
+    private ImageView mImage;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mCityName = (TextView) findViewById(R.id.tvCityName);
+        mCityCountry = (TextView) findViewById(R.id.tvCityCountry);
+        mForecast = (TextView) findViewById(R.id.tvForecast);
+        mImage = (ImageView) findViewById(R.id.ivImage);
 
         ImageButton mImageButton = (ImageButton) findViewById(R.id.ibMenu);
         mImageButton.setOnClickListener(new View.OnClickListener() {
@@ -54,23 +64,27 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             }
         });
 
-
-//        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.title_update);
-//        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         weatherManager = new WeatherManager(this, this);
-        onRefresh();
-//        sPref = getSharedPreferences(Constants.PREF, MODE_PRIVATE);
-//
-//        String id = sPref.getString(Constants.CITY_NAME, "");
-//        String name = sPref.getString(Constants.CITY_COUNTRY, "");
-//
-//        sPref.edit().remove(Constants.CITY_NAME).apply();
-//        sPref.edit().remove(Constants.CITY_COUNTRY).apply();
 
+        sPref = getSharedPreferences(Constants.PREF, MODE_PRIVATE);
+
+        String flag = sPref.getString(Constants.FLAG, "");
+        String name = sPref.getString(Constants.CITY_NAME, "");
+        String country = sPref.getString(Constants.CITY_COUNTRY, "");
+
+        if (flag.equals("")) {
+            onRefresh();
+        }
+        if (!flag.equals("")) {
+            City mCity = new City(name, country);
+            weatherManager.getWeatherFromDb(mCity);
+        }
     }
 
     private void showPopupMenu(View v) {
+
         PopupMenu popupMenu = new PopupMenu(this, v);
         popupMenu.inflate(R.menu.menu_main);
 
@@ -91,7 +105,6 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         popupMenu.show();
     }
 
-
     @Override
     public void showData(Forecast forecast) {
 
@@ -104,6 +117,10 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             String ATTRIBUTE_HUMIDITY = "humidity";
             String ATTRIBUTE_SPEED = "speed";
             String ATTRIBUTE_CLOUDS = "clouds";
+
+            sPref.edit().putString(Constants.CITY_NAME, forecast.getCity().getName()).apply();
+            sPref.edit().putString(Constants.CITY_COUNTRY, forecast.getCity().getCountry()).apply();
+            sPref.edit().putString(Constants.FLAG, "flag").apply();
 
             Map<String, Object> m;
 
@@ -136,16 +153,10 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             lvSimple = (ListView) findViewById(R.id.list);
             lvSimple.setAdapter(sAdapter);
 
-            TextView mCityName = (TextView) findViewById(R.id.tvCityName);
-            TextView mCityCountry = (TextView) findViewById(R.id.tvCityCountry);
-            TextView mForecast = (TextView) findViewById(R.id.tvForecast);
-            ImageView mImage = (ImageView) findViewById(R.id.ivImage);
-
-            mImage.setImageResource(getResources().getIdentifier(Constants.IMG + forecast.get(0).getIcon(), "mipmap", getApplicationContext().getPackageName()));
             mCityName.setText(forecast.getCity().getName());
             mCityCountry.setText(forecast.getCity().getCountry());
             mForecast.setText(forecast.get(0).getDescription() + " " + (int) (forecast.get(0).getTemp() - Constants.TEMP) + "°C");
-
+            mImage.setImageResource(getResources().getIdentifier(Constants.IMG + forecast.get(0).getIcon(), "mipmap", getApplicationContext().getPackageName()));
         }
     }
 
@@ -161,12 +172,10 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             }
             return false;
         }
-
     }
 
     @Override
     public void showError(String message) {
-
 
         new AlertDialog.Builder(this).setMessage(message).create().show();
     }
@@ -174,7 +183,11 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
     @Override
     public void showProgress(boolean isInProgress) {
 
-//        mSwipeRefreshLayout.setRefreshing(isInProgress);
+        if (isInProgress) {
+            mProgressBar.setVisibility(ProgressBar.VISIBLE);
+        } else {
+            mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+        }
     }
 
     @Override

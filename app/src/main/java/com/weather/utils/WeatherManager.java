@@ -13,10 +13,11 @@ import android.support.annotation.Nullable;
 
 import com.weather.HttpClient;
 import com.weather.R;
-import com.weather.costants.Constants;
+import com.weather.constants.Constants;
 import com.weather.db.DbHelper;
 import com.weather.db.IDbOperations;
 import com.weather.db.WeatherTable;
+import com.weather.model.City;
 import com.weather.model.Forecast;
 import com.weather.model.Weather;
 import com.weather.parser.ParseJson;
@@ -30,10 +31,12 @@ public class WeatherManager implements Contract.Presenter {
     private static final String ACCESS_KEY = "57eac87bbf864b3de29a4c2274497ced";
     private static final String BASE_URL = "http://api.openweathermap.org/data/2.5/forecast/daily?";
 
+    private Forecast forecast;
     private Contract.View mView;
     private Handler mHandler;
     private Context mContext;
     private IDbOperations operations;
+    private static SharedPreferences sPref;
 
     public WeatherManager(@NonNull final Contract.View view, Context pContext) {
         mView = view;
@@ -69,11 +72,12 @@ public class WeatherManager implements Contract.Presenter {
 
                 Forecast forecast = parseJson.parseJson(response);
 
+
                 notifyResponse(forecast);
 
                 operations.delete(WeatherTable.WeatherTable, null, null);
 
-                setDateDb(forecast);
+                setDataDb(forecast);
 
             }
         }.start();
@@ -108,44 +112,43 @@ public class WeatherManager implements Contract.Presenter {
     }
 
     @Override
-    public void getWeatherFromDb() {
+    public void getWeatherFromDb(City city) {
 
+        final ArrayList<Weather> data = getDataDb();
+        forecast = new Forecast(city, data);
         new Thread() {
 
             @Override
             public void run() {
-
-//                notifyResponse(getDataDb());
+                notifyResponse(forecast);
 
             }
         }.start();
 
     }
 
+    private void setDataDb(final Forecast forecast) {
 
-    private void setDateDb(final Forecast forecast) {
-
-        final List<ContentValues> listContantValues = new ArrayList<>();
+        final List<ContentValues> listContentValues = new ArrayList<>();
 
         ContentValues values;
 
         for (final Weather weather : forecast.getList()) {
 
-                values = new ContentValues();
+            values = new ContentValues();
 
+            values.put(WeatherTable.DATE, weather.getDate());
+            values.put(WeatherTable.TEMP, weather.getTemp());
+            values.put(WeatherTable.HUMIDITY, weather.getHumidity());
+            values.put(WeatherTable.DESCRIPTION, weather.getDescription());
+            values.put(WeatherTable.ICON, weather.getIcon());
+            values.put(WeatherTable.SPEED, weather.getSpeed());
+            values.put(WeatherTable.CLOUDS, weather.getClouds());
 
-                values.put(WeatherTable.DATE, weather.getDate());
-                values.put(WeatherTable.TEMP, weather.getTemp());
-                values.put(WeatherTable.HUMIDITY, weather.getHumidity());
-                values.put(WeatherTable.DESCRIPTION, weather.getDescription());
-                values.put(WeatherTable.ICON, weather.getIcon());
-                values.put(WeatherTable.CLOUDS, weather.getClouds());
-                values.put(WeatherTable.SPEED, weather.getSpeed());
+            listContentValues.add(values);
+        }
 
-                listContantValues.add(values);
-            }
-
-        operations.bulkInsert(WeatherTable.WeatherTable, listContantValues);
+        operations.bulkInsert(WeatherTable.WeatherTable, listContentValues);
     }
 
     @Nullable
@@ -159,11 +162,11 @@ public class WeatherManager implements Contract.Presenter {
 
         Cursor cursor = operations.query(sql, null);
 
-        ArrayList<Weather> list=null;
+        ArrayList<Weather> list = null;
 
         if (cursor.moveToFirst()) {
 
-            list= new ArrayList<>();
+            list = new ArrayList<>();
             do {
 
                 Weather weather = new Weather(cursor.getLong(cursor.getColumnIndex(WeatherTable.DATE)),

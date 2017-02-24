@@ -32,7 +32,7 @@ public class LocatrListener implements LocationListener {
 
         if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
             imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        } else if(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null){
+        } else if (locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {
             imHere = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
         }
 

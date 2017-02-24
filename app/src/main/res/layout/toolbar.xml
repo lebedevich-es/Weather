@@ -29,8 +29,15 @@
         android:layout_height="52dp"
         android:layout_gravity="right"
         android:background="@color/colorPrimary"
-        android:onClick="startProgress"
         android:src="@drawable/ic_refresh"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"/>
 
 </android.support.v7.widget.Toolbar>
 
