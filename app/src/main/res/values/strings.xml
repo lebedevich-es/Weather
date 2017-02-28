@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Weather</string>
     <string name="now">now</string>
-    <string name="title_about_program">About program</string>
+    <string name="title_about_program">About the program</string>
 
     <string name="empty">-</string>
     <string name="about_weather">The application about weather</string>
