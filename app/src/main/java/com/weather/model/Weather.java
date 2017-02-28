@@ -17,6 +17,7 @@ public class Weather {
     private int mClouds;
 
     public Weather(long pDate, double pTemp, int pHumidity, String pDescription, String pIcon, int pSpeed, int pClouds) {
+
         mDate = pDate;
         mTemp = pTemp;
         mHumidity = pHumidity;

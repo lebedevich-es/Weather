@@ -25,7 +25,7 @@ public class Forecast {
         return mList;
     }
 
-    public int size(){
+    public int size() {
         return mList.size();
     }
 

@@ -22,4 +22,5 @@ public interface Contract {
 
         void getWeatherFromDb(City city);
     }
+
 }

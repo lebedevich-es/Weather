@@ -2,7 +2,6 @@ package com.weather.utils;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,7 +12,6 @@ import android.support.annotation.Nullable;
 
 import com.weather.HttpClient;
 import com.weather.R;
-import com.weather.constants.Constants;
 import com.weather.db.DbHelper;
 import com.weather.db.IDbOperations;
 import com.weather.db.WeatherTable;
@@ -23,8 +21,10 @@ import com.weather.model.Weather;
 import com.weather.parser.ParseJson;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class WeatherManager implements Contract.Presenter {
 
@@ -36,9 +36,9 @@ public class WeatherManager implements Contract.Presenter {
     private Handler mHandler;
     private Context mContext;
     private IDbOperations operations;
-    private static SharedPreferences sPref;
 
     public WeatherManager(@NonNull final Contract.View view, Context pContext) {
+
         mView = view;
         mHandler = new Handler(Looper.getMainLooper());
         mContext = pContext;
@@ -54,7 +54,6 @@ public class WeatherManager implements Contract.Presenter {
             loadData(String.valueOf(lat), String.valueOf(lon));
         } else {
             notifyError(mContext.getString(R.string.no_internet_connection));
-
         }
     }
 
@@ -67,11 +66,9 @@ public class WeatherManager implements Contract.Presenter {
 
                 String response = (new HttpClient()).get(BASE_URL + "lat=" + lat + "&lon=" + lon + "&cnt=10" + "&APPID=" + ACCESS_KEY);
 
-                System.out.println(response);
                 ParseJson parseJson = new ParseJson();
 
                 Forecast forecast = parseJson.parseJson(response);
-
 
                 notifyResponse(forecast);
 
@@ -84,6 +81,7 @@ public class WeatherManager implements Contract.Presenter {
     }
 
     private void notifyResponse(final Forecast forecast) {
+
         mHandler.post(new Runnable() {
 
             @Override
@@ -95,6 +93,7 @@ public class WeatherManager implements Contract.Presenter {
     }
 
     private void notifyError(final String message) {
+
         mHandler.post(new Runnable() {
 
             @Override
@@ -106,6 +105,7 @@ public class WeatherManager implements Contract.Presenter {
     }
 
     private boolean isNetworkAvailable() {
+
         final ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
         final NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
@@ -116,15 +116,14 @@ public class WeatherManager implements Contract.Presenter {
 
         final ArrayList<Weather> data = getDataDb();
         forecast = new Forecast(city, data);
+
         new Thread() {
 
             @Override
             public void run() {
                 notifyResponse(forecast);
-
             }
         }.start();
-
     }
 
     private void setDataDb(final Forecast forecast) {
@@ -156,7 +155,14 @@ public class WeatherManager implements Contract.Presenter {
 
         String sql = WeatherTable.DATE + "<?";
 
-        operations.delete(WeatherTable.WeatherTable, sql, Long.toString((new Date()).getTime()));
+        Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+        long date = calendar.getTimeInMillis();
+        Integer hour = calendar.get(Calendar.HOUR_OF_DAY);
+        Integer minute = calendar.get(Calendar.MINUTE);
+        Integer second = calendar.get(Calendar.SECOND);
+        Integer time = ((hour * 60 + minute) * 60 + second) * 1000;
+
+        operations.delete(WeatherTable.WeatherTable, sql, Long.toString(date - time));
 
         sql = "SELECT * FROM " + WeatherTable.WeatherTable;
 

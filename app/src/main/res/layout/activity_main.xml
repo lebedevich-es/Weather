@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.weather.MainActivity">
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.weather.MainActivity">
 
-    <include layout="@layout/toolbar" />
+    <include layout="@layout/toolbar"/>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -33,7 +33,7 @@
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"
                     android:paddingTop="30dp"
-                    android:src="@mipmap/img01d" />
+                    android:src="@mipmap/img01d"/>
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -51,7 +51,7 @@
                         android:paddingRight="30dp"
                         android:text="@string/empty"
                         android:textColor="@color/colorWhite"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                     <TextView
                         android:id="@+id/tvCityName"
@@ -61,7 +61,7 @@
                         android:paddingRight="30dp"
                         android:text="@string/empty"
                         android:textColor="#000000"
-                        android:textSize="25sp" />
+                        android:textSize="25sp"/>
 
                     <TextView
                         android:id="@+id/tvForecast"
@@ -73,7 +73,7 @@
                         android:paddingTop="10dp"
                         android:text="@string/empty"
                         android:textColor="@color/colorWhite"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
 
@@ -81,7 +81,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="2dp" />
+                android:layout_height="2dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -90,12 +90,10 @@
                 android:background="@color/colorDarkGrey"
                 android:orientation="vertical">
 
-                <!--<include layout="@layout/item"/>-->
-
                 <ListView
                     android:id="@+id/list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"/>
 
             </LinearLayout>
 
@@ -105,9 +103,10 @@
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal|center_vertical"
+            android:layout_gravity="center"
             android:indeterminateDrawable="@drawable/white_progress"
-            android:visibility="invisible" />
+            android:indeterminateOnly="true"
+            android:visibility="invisible"/>
 
     </FrameLayout>
 

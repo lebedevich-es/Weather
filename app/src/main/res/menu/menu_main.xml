@@ -4,6 +4,6 @@
       tools:context=".MainActivity">
 
     <item
-        android:id="@+id/title_about_program"
-        android:title="О программе"/>
+        android:id="@+id/titleAboutProgram"
+        android:title="@string/title_about_program"/>
 </menu>

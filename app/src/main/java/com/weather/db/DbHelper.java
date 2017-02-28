@@ -31,7 +31,6 @@ public class DbHelper extends SQLiteOpenHelper implements IDbOperations {
                 + WeatherTable.CLOUDS + " INTEGER";
         String sql = String.format(Locale.US, SQL_TABLE_CREATE_TEMPLATE, WeatherTable.WeatherTable, str);
         db.execSQL(sql);
-
     }
 
     @Override
@@ -41,8 +40,8 @@ public class DbHelper extends SQLiteOpenHelper implements IDbOperations {
 
     @Override
     public Cursor query(final String sql, final String... args) {
-        final SQLiteDatabase database = getReadableDatabase();
 
+        final SQLiteDatabase database = getReadableDatabase();
         return database.rawQuery(sql, args);
     }
 

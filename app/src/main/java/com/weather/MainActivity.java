@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         mCityCountry = (TextView) findViewById(R.id.tvCityCountry);
         mForecast = (TextView) findViewById(R.id.tvForecast);
         mImage = (ImageView) findViewById(R.id.ivImage);
+        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         ImageButton mImageButton = (ImageButton) findViewById(R.id.ibMenu);
         mImageButton.setOnClickListener(new View.OnClickListener() {
@@ -64,8 +65,6 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             }
         });
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-
         weatherManager = new WeatherManager(this, this);
 
         sPref = getSharedPreferences(Constants.PREF, MODE_PRIVATE);
@@ -75,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         String country = sPref.getString(Constants.CITY_COUNTRY, "");
 
         if (flag.equals("")) {
-            onRefresh();
+//            onRefresh();
         }
         if (!flag.equals("")) {
             City mCity = new City(name, country);
@@ -94,8 +93,8 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
             public boolean onMenuItemClick(MenuItem item) {
 
                 switch (item.getItemId()) {
-                    case R.id.title_about_program:
-                        Toast.makeText(getApplicationContext(), "Приложение о погоде.", Toast.LENGTH_SHORT).show();
+                    case R.id.titleAboutProgram:
+                        Toast.makeText(getApplicationContext(), "The application about weather.", Toast.LENGTH_SHORT).show();
                         return true;
                     default:
                         return false;
