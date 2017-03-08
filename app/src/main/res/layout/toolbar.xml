@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="52dp"
+    android:background="@color/colorPrimary">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="25dp"
+        android:text="@string/now"
+        android:textColor="@color/colorWhite"
+        android:textSize="21sp"/>
+
+    <ImageButton
+        android:id="@+id/ibMenu"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="right"
+        android:layout_marginRight="10dp"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/ic_menu"/>
+
+    <ImageButton
+        android:id="@+id/ibRefresh"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
+        android:layout_gravity="right"
+        android:background="@color/colorPrimary"
+        android:src="@drawable/ic_refresh"/>
+
+</android.support.v7.widget.Toolbar>
+
+
