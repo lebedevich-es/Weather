@@ -7,7 +7,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 
 public class LocatrListener implements LocationListener {
 
@@ -16,22 +16,21 @@ public class LocatrListener implements LocationListener {
 
     public static void SetUpLocationListener(final Context context) {
 
-        LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
 
-        LocationListener locationListener = new LocatrListener();
+            LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+            LocationListener locationListener = new LocatrListener();
 
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, 10, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, 10, locationListener);
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, 10, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, 10, locationListener);
+            if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
+                imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            } else if (locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {
+                imHere = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            }
 
-        if (locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) != null) {
-            imHere = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        } else if (locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER) != null) {
-            imHere = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
         }
     }
 

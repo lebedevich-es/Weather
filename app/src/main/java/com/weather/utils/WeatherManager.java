@@ -172,11 +172,7 @@ public class WeatherManager implements Contract.Presenter {
             long dateDb = list.get(0).getDate();
 
             if (dateDb < (date - time)) {
-                realm = Realm.getDefaultInstance();
-                realm.beginTransaction();
                 list.remove(0);
-                realm.commitTransaction();
-                realm.close();
                 i = 0;
             } else break;
         }

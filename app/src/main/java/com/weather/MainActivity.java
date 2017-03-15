@@ -1,8 +1,13 @@
 package com.weather;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
@@ -32,6 +37,7 @@ import io.realm.RealmConfiguration;
 
 public class MainActivity extends AppCompatActivity implements Contract.View {
 
+    private static final int PERMISSION_REQUEST_CODE = 0;
     private WeatherManager weatherManager;
     private SharedPreferences sPref;
     private TextView mCityName;
@@ -48,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
 
         final RealmConfiguration config = new RealmConfiguration.Builder(this).build();
         Realm.setDefaultConfiguration(config);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions();
+        }
 
         mCityName = (TextView) findViewById(R.id.tvCityName);
         mCityCountry = (TextView) findViewById(R.id.tvCityCountry);
@@ -79,12 +91,29 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         String name = sPref.getString(Constants.CITY_NAME, "");
         String country = sPref.getString(Constants.CITY_COUNTRY, "");
 
-        if (flag.equals("")) {
-//            onRefresh();
-        }
         if (!flag.equals("")) {
             City mCity = new City(name, country);
             weatherManager.getWeatherFromDb(mCity);
+        }
+    }
+
+    private void requestPermissions() {
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                },
+                PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (permissions.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            } else {
+                requestPermissions();
+            }
         }
     }
 
@@ -201,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         LocatrListener.SetUpLocationListener(this);
         weatherManager.getWeather(LocatrListener.imHere.getLatitude(), LocatrListener.imHere.getLongitude());
     }
+
 
 }
 
